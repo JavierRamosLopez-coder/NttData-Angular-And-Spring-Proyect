@@ -3,25 +3,60 @@ import { Cliente } from './cliente';
 import { ClienteService } from './cliente.service';
 import Swal from 'sweetalert2';
 import { tap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
-  styleUrls: ['./clientes.component.css']
 })
 export class ClientesComponent implements OnInit {
 
+  // Creación de una variable de la clase Cliente
   clientes : Cliente[];
+  paginador : any;
 
-  constructor(private clienteService : ClienteService) { }
+  // En su constructor, tenemos que inicializar el servicio ya que es el encargado
+  // de suministrarnos los métodos necesarios
+  constructor(private clienteService : ClienteService, private activatedRoute : ActivatedRoute) { }
 
+  /**
+   * El método onInit va a ser el primero que se va a cargar cuando la aplicación
+   * se lanze, por lo que vamos a mostrar con ayuda del operador .tap todos 
+   * los registros
+   */
   ngOnInit(): void {
-    this.clienteService.getCliente().pipe(
-      tap(clientes => this.clientes = clientes)
-    ).subscribe()
+
+    this.activatedRoute.paramMap.subscribe( params => {
+    // Aquí vamos a tener dos maneras de mostrar la información, la primera manera
+    // con el método subscribe, que se va a encargar de mostrar los datos,
+    // método muy importante
+    
+    //this.clienteService.getCliente(page).subscribe(clientes => this.clientes = clientes)
+
+      let page : number = +params.get('page');
+
+      if(!page){
+        page = 0;
+      }
+
+    // Y la siguiente manera sería la siguiente : 
+    this.clienteService.getCliente(page).pipe(
+      tap(response => {
+        (response.content as Cliente[])
+      })
+    ).subscribe(response => {
+      this.clientes = response.content as Cliente[];
+      this.paginador = response;
+    })
+    }
+    )
+  
   }
 
-  
+  /**
+   * Método encargado de eliminar un cliente
+   * @param cliente 
+   */
   public delete(cliente : Cliente) : void{
     Swal.fire({
       title: 'Are you sure?',

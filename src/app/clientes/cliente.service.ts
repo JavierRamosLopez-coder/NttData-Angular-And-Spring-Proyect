@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Cliente } from './cliente';
-import { CLIENTES } from './clientes.json';
 import { map, Observable, throwError,tap } from 'rxjs';
 import { of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -27,20 +26,18 @@ export class ClienteService {
    * Método getCliente que va a retornar todos los clientes de la URL
    * @returns 
    */
-  getCliente() : Observable<Cliente[]>{
-    return this.http.get<Cliente[]>(this.urlEndPoint).pipe(
-      map(response => {
-        let clientes = response as Cliente[];
-        return clientes.map(cliente =>{
+  getCliente(page : number) : Observable<any>{
+    return this.http.get<Cliente[]>(this.urlEndPoint + '/page/' + page).pipe(
+      map((response :any) => {
+        (response.content as Cliente[]).map(cliente =>{
           cliente.nombre = cliente.nombre.toUpperCase();
 
           return cliente;
-        })
+        });
+        return response;
       }),
-      tap(response => {
-        let clientes = response as Cliente[];
-
-        clientes.forEach(cliente => {
+      tap((response : any) => {
+        (response.content as Cliente[]).forEach(cliente => {
           console.log(cliente.nombre)
         })
       }),
@@ -48,7 +45,7 @@ export class ClienteService {
   }
 
   /**
-   * Método create que va a crear un objeto obtenido
+   * Método create que va a crear un cliente
    * @param cliente 
    * @returns 
    */
@@ -119,4 +116,6 @@ export class ClienteService {
       )
     )
   }
+
+  
 }

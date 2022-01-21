@@ -6,14 +6,18 @@ import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-form',
-  templateUrl: './form.component.html',
-  styleUrls: ['./form.component.css']
+  templateUrl: './form.component.html'
 })
 export class FormComponent implements OnInit {
 
+  // Creación de un objeto de la clase Cliente
   public cliente : Cliente = new Cliente();
-  public titulo : string = "Crear cliente"
 
+  // Creación de un objeto del servicio, para que podamos acceder a los métodos
+  //, otro objeto de la clase Router para navegar entre distintos componentes
+  // gracias al método .navigate, y por último un objeto de la clase Activated
+  // Routed para tomar como parámetro ciertos valores, gracias al método
+  // params
   constructor(private clienteService : ClienteService, private router : Router,private activatedRoute : ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -28,7 +32,7 @@ export class FormComponent implements OnInit {
       let id = params['id']
       if(id){
         this.clienteService.getClientee(id).subscribe(
-          (cliente) => this.cliente = cliente
+          cliente => this.cliente = cliente
         )
       }
     }

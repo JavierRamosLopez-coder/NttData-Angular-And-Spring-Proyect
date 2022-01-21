@@ -1,4 +1,4 @@
-<div class="card text-white bg-primary mb-3">
+<div class="card text-blue bg-secundary mb-3">
     <div class="card-header">Clientes</div>
     <div class="card-body">
       <h5 class="card-title">Listado de clientes</h5>
@@ -21,7 +21,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let cliente of clientes">
-                    <td>{{cliente.id}}</td>
+                    <td><button type="button" [routerLink] = "['/clientes/ver', cliente.id]" class="btn btn-success btn-sm">{{cliente.id}}</button></td>
                     <td>{{cliente.nombre}}</td>
                     <td>{{cliente.apellido}}</td>
                     <td>{{cliente.email}}</td>
@@ -34,6 +34,6 @@
                 </tr>
             </tbody>
         </table>
-
+        <paginator-nav *ngIf="paginador" [paginador] = "paginador"></paginator-nav>
     </div>
   </div>
